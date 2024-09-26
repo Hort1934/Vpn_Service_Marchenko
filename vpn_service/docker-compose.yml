@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: vpn_db
+      POSTGRES_USER: vpn_user
+      POSTGRES_PASSWORD: vpn_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vpn_network
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/vpn_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - vpn_network
+
+networks:
+  vpn_network:
+
+volumes:
+  postgres_data:
